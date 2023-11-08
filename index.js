@@ -55,10 +55,12 @@ async function run() {
 }
 run().catch(console.log);
 
+// create services database
 const serviceCollection = client
   .db("travlogDB")
   .collection("serviceCollection");
 
+// create booking database
 const bookingCollection = client
   .db("travlogDB")
   .collection("bookingCollection");
@@ -90,8 +92,12 @@ app.post("/api/v1/logout", (req, res) => {
 
 // get all services from database
 app.get("/api/v1/services", async (req, res) => {
-  const result = await serviceCollection.find().toArray();
-  res.send(result);
+  try {
+    const result = await serviceCollection.find().toArray();
+    res.send(result);
+  } catch (error) {
+    res.send({ message: error });
+  }
 });
 
 // search services by user requested values
