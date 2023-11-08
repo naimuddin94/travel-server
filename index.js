@@ -150,10 +150,14 @@ app.post("/api/v1/services", async (req, res) => {
 });
 
 // save book service to database
-app.post("/api/v1/booking", async (req, res) => {
-  const service = req.body;
-  const result = await bookingCollection.insertOne(service);
-  res.send(result);
+app.post("/api/v1/booking",verifyUser, async (req, res) => {
+  try {
+    const service = req.body;
+    const result = await bookingCollection.insertOne(service);
+    res.send(result);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
 });
 
 // get booking services by user email
