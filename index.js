@@ -149,7 +149,10 @@ app.get("/api/v1/booking", verifyUser, async (req, res) => {
     return res.status(401).send({ message: "unauthorized" });
   }
 
-  const query = { userEmail: email };
+  const query = {};
+  if (email) {
+    query.userEmail = email;
+  }
   const result = await bookingCollection.find(query).toArray();
   res.send(result);
 });
