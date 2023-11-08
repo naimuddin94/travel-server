@@ -1,14 +1,13 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-require("dotenv").config();
 const port = process.env.PORT || 5000;
 const app = express();
 
 //middleware
-app.use(express.json());
 app.use(
   cors({
     origin: [
@@ -18,6 +17,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(express.json());
 app.use(cookieParser());
 
 // middleware
@@ -95,27 +95,19 @@ app.post("/api/v1/logout", (req, res) => {
 
 // get all services from database
 app.get("/api/v1/services", async (req, res) => {
-  try {
-    const result = await serviceCollection.find().toArray();
-    res.send(result);
-  } catch (error) {
-    res.send({ message: "error while fetched data" });
-  }
+  const result = await serviceCollection.find().toArray();
+  res.send(result);
 });
 
 // search services by user requested values
 app.get("/api/v1/search", async (req, res) => {
   const value = req.query.value;
-  try {
-    const query = {
-      serviceName: { $regex: value, $options: "i" },
-    };
-    const results = await serviceCollection.find(query).toArray();
-    res.json(results);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({ message: error.message });
-  }
+
+  const query = {
+    serviceName: { $regex: value, $options: "i" },
+  };
+  const results = await serviceCollection.find(query).toArray();
+  res.json(results);
 });
 
 // get services by user email
@@ -132,35 +124,23 @@ app.get("/api/v1/user-services", verifyUser, async (req, res) => {
 
 // get single service by id
 app.get("/api/v1/services/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const result = await serviceCollection.findOne({ _id: new ObjectId(id) });
-    res.send(result);
-  } catch (error) {
-    res.send({ message: error.message });
-  }
+  const id = req.params.id;
+  const result = await serviceCollection.findOne({ _id: new ObjectId(id) });
+  res.send(result);
 });
 
 // save services to database
 app.post("/api/v1/services", async (req, res) => {
-  try {
-    const service = req.body;
-    const result = await serviceCollection.insertOne(service);
-    res.send(result);
-  } catch (error) {
-    res.status(500).send({ message: error.message });
-  }
+  const service = req.body;
+  const result = await serviceCollection.insertOne(service);
+  res.send(result);
 });
 
 // save book service to database
 app.post("/api/v1/booking", verifyUser, async (req, res) => {
-  try {
-    const service = req.body;
-    const result = await bookingCollection.insertOne(service);
-    res.send(result);
-  } catch (error) {
-    res.status(500).send({ message: error.message });
-  }
+  const service = req.body;
+  const result = await bookingCollection.insertOne(service);
+  res.send(result);
 });
 
 // get booking services by user email
