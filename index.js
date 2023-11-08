@@ -140,9 +140,13 @@ app.get("/api/v1/services/:id", async (req, res) => {
 
 // save services to database
 app.post("/api/v1/services", async (req, res) => {
-  const service = req.body;
-  const result = await serviceCollection.insertOne(service);
-  res.send(result);
+  try {
+    const service = req.body;
+    const result = await serviceCollection.insertOne(service);
+    res.send(result);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
 });
 
 // save book service to database
