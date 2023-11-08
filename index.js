@@ -96,7 +96,7 @@ app.get("/api/v1/services", async (req, res) => {
     const result = await serviceCollection.find().toArray();
     res.send(result);
   } catch (error) {
-    res.send({ message: error });
+    res.send({ message: "error while fetched data" });
   }
 });
 
@@ -111,7 +111,7 @@ app.get("/api/v1/search", async (req, res) => {
     res.json(results);
   } catch (error) {
     console.error(error);
-    res.status(500).send({ message: "Internal Server Error" });
+    res.status(500).send({ message: error.message });
   }
 });
 
@@ -129,9 +129,13 @@ app.get("/api/v1/user-services", verifyUser, async (req, res) => {
 
 // get single service by id
 app.get("/api/v1/services/:id", async (req, res) => {
-  const id = req.params.id;
-  const result = await serviceCollection.findOne({ _id: new ObjectId(id) });
-  res.send(result);
+  try {
+    const id = req.params.id;
+    const result = await serviceCollection.findOne({ _id: new ObjectId(id) });
+    res.send(result);
+  } catch (error) {
+    res.send({message: error.message});
+  }
 });
 
 // save services to database
