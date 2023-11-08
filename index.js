@@ -11,7 +11,10 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: [
+      "https://travlog-a6efa.web.app",
+      "https://travlog-a6efa.firebaseapp.com",
+    ],
     credentials: true,
   })
 );
@@ -134,7 +137,7 @@ app.get("/api/v1/services/:id", async (req, res) => {
     const result = await serviceCollection.findOne({ _id: new ObjectId(id) });
     res.send(result);
   } catch (error) {
-    res.send({message: error.message});
+    res.send({ message: error.message });
   }
 });
 
@@ -150,7 +153,7 @@ app.post("/api/v1/services", async (req, res) => {
 });
 
 // save book service to database
-app.post("/api/v1/booking",verifyUser, async (req, res) => {
+app.post("/api/v1/booking", verifyUser, async (req, res) => {
   try {
     const service = req.body;
     const result = await bookingCollection.insertOne(service);
