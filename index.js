@@ -13,6 +13,7 @@ app.use(
     origin: [
       "https://travlog-a6efa.web.app",
       "https://travlog-a6efa.firebaseapp.com",
+      "http://localhost:5173",
     ],
     credentials: true,
   })
@@ -236,6 +237,18 @@ app.delete("/api/v1/services/:id", verifyUser, async (req, res) => {
   }
 
   const result = await serviceCollection.deleteOne({ _id: new ObjectId(id) });
+  res.send(result);
+});
+
+// delete booking from database
+app.delete("/api/v1/delete-booking/:id", verifyUser, async (req, res) => {
+  const id = req.params.id;
+  const email = req.query.email;
+  if (email !== req.user.email) {
+    return res.status(401).send({ message: "unauthorized" });
+  }
+
+  const result = await bookingCollection.deleteOne({ _id: new ObjectId(id) });
   res.send(result);
 });
 
